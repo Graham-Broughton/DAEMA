@@ -65,7 +65,7 @@ def main(args):
                             metrics.dml_metric(imputed_train, imputed, train_targets, test_targets, classif))
             print(f"Seed {dataset_seed}.{seed} (dataset_seed, model_seed) results for the {dataset} dataset "
                   f"and the {args.model} model:")
-            for metric, vals in res.items():
+            for metric in res:
                 print(f"{metric}: Mean {np.mean(res[metric][-len(args.metric_steps):])} "
                       f"from values {res[metric][-len(args.metric_steps):]}")
         print(f"Final results for the {dataset} dataset and the {args.model} model:")

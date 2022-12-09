@@ -507,8 +507,7 @@ class MissForest:
             cat_vars = None
 
         # Check data integrity and calling arguments
-        force_all_finite = False if self.missing_values in ["NaN",
-                                                            np.nan] else True
+        force_all_finite = self.missing_values not in ["NaN", np.nan]
 
         X = check_array(X, accept_sparse=False, dtype=np.float64,
                         force_all_finite=force_all_finite, copy=self.copy)
@@ -526,7 +525,7 @@ class MissForest:
         if cat_vars is not None:
             if type(cat_vars) == int:
                 cat_vars = [cat_vars]
-            elif type(cat_vars) == list or type(cat_vars) == np.ndarray:
+            elif type(cat_vars) in [list, np.ndarray]:
                 if np.array(cat_vars).dtype != int:
                     raise ValueError(
                         "cat_vars needs to be either an int or an array "
@@ -573,8 +572,7 @@ class MissForest:
         check_is_fitted(self, ["cat_vars_", "num_vars_", "statistics_"])
 
         # Check data integrity
-        force_all_finite = False if self.missing_values in ["NaN",
-                                                            np.nan] else True
+        force_all_finite = self.missing_values not in ["NaN", np.nan]
         X = check_array(X, accept_sparse=False, dtype=np.float64,
                         force_all_finite=force_all_finite, copy=self.copy)
         X_test = check_array(X_test, accept_sparse=False, dtype=np.float64,
@@ -592,7 +590,7 @@ class MissForest:
 
         # Get fitted X col count and ensure correct dimension
         n_cols_fit_X = (0 if self.num_vars_ is None else len(self.num_vars_)) \
-            + (0 if self.cat_vars_ is None else len(self.cat_vars_))
+                + (0 if self.cat_vars_ is None else len(self.cat_vars_))
         _, n_cols_X = X.shape
 
         if n_cols_X != n_cols_fit_X or n_cols_X != X_test.shape[1]:
@@ -600,7 +598,7 @@ class MissForest:
                              "dataset and the one to be transformed.")
 
         # Check if anything is actually missing and if not return original X
-        if not mask_test.sum() > 0:
+        if mask_test.sum() <= 0:
             warnings.warn("No missing value located; returning original "
                           "dataset.")
             return X_test

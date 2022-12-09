@@ -32,8 +32,12 @@ class DAE(nn.Module):
         encoder_modules = []
         decoder_modules = []
         for i in range(depth):
-            encoder_modules.append(nn.Linear(n_cols + theta * i, n_cols + theta * (i + 1)))
-            encoder_modules.append(nn.Tanh())
+            encoder_modules.extend(
+                (
+                    nn.Linear(n_cols + theta * i, n_cols + theta * (i + 1)),
+                    nn.Tanh(),
+                )
+            )
             decoder_modules.insert(0, nn.Tanh())
             decoder_modules.insert(0, nn.Linear(n_cols + theta * (i + 1), n_cols + theta * i))
         encoder_modules.pop()
